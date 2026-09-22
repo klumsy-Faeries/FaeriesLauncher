@@ -44,4 +44,11 @@ jobs:
         run: |
           $tag = "${{ github.ref_name }}"
           $notes = "Windows installer for Faeries Launcher $tag. Installs per user, no admin prompt.`n`nSHA-256: ``$env:SHA256```n`nChanges: see CHANGELOG.md in the repository."
-          gh release create $tag $env:ASSET --title "Faeries Launcher $tag" --notes $notes
+          # A moved tag re-runs this job; refresh the asset on the existing release then.
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $env:ASSET --clobber
+            gh release edit $tag --notes $notes
+          } else {
+            gh release create $tag $env:ASSET --title "Faeries Launcher $tag" --notes $notes
+          }
