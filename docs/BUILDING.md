@@ -150,10 +150,10 @@ All launcher data (config, logs, themes, instances, game data) lives in
 `%APPDATA%\FaerieLauncher`. Set `FAERIE_DATA_DIR` to relocate it — useful
 for portable installs and for testing against a scratch directory.
 
-## Testing from inside a packaged app (Claude desktop, Store apps)
+## Testing from inside a packaged app (Store apps and similar)
 
 If you start the launcher from a shell that itself runs inside an MSIX or
-AppX package — the Claude desktop app's terminal is one — every process it
+AppX package — some editors and terminals ship that way — every process it
 spawns carries that package's identity, and Windows redirects their writes
 under `%APPDATA%` and `%LOCALAPPDATA%` into the package's private overlay
 (`%LOCALAPPDATA%\Packages\<package>\LocalCache\Roaming\FaerieLauncher`).

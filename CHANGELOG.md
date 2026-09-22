@@ -80,8 +80,8 @@
   refused while the game is running, since the game would overwrite the
   file on exit.
 - **"No account, no client ID, no instance" explained.** A launcher started
-  from inside an MSIX-packaged app (the Claude desktop app's terminal, Store
-  apps) runs with that package's identity, and Windows redirects its
+  from inside an MSIX-packaged app (a Store app's terminal, for example)
+  runs with that package's identity, and Windows redirects its
   `AppData` writes into the package's private overlay. Two launchers then
   disagree about what is on disk: the one started from the packaged shell
   sees a signed-in account, the client ID and instances that the one started

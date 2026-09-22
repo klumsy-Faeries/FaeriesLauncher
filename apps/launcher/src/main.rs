@@ -28,8 +28,8 @@ use crate::state::AppState;
 
 /// Where this process's writes under `AppData` really land.
 ///
-/// A process started from inside an app package — the Claude desktop app's
-/// terminal, Store apps, and everything they spawn — has its writes under
+/// A process started from inside an app package — a Store app's terminal,
+/// say, and everything it spawns — has its writes under
 /// `%APPDATA%` and `%LOCALAPPDATA%` redirected into that package's private
 /// `LocalCache` overlay, while its reads see the real folder and the overlay
 /// merged. From inside, everything looks normal; a launcher started from

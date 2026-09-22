@@ -11,8 +11,5 @@ apps/launcher/gen/
 # Logs and local scratch
 *.log
 
-# Editor and assistant scratch (machine-specific paths)
-.claude/
-
 # Installer copies made for a release upload
 /*-setup.exe
