@@ -1,8 +1,8 @@
 # Publishes the one-page website in site/ to GitHub Pages.
 #
-# No setup on GitHub is needed: the configure step enables Pages for the
-# repository on its first run (Settings -> Pages then shows "GitHub Actions"
-# as the source). Every push that touches site/ redeploys it.
+# Pages must be enabled once on GitHub (Settings -> Pages -> Source: "GitHub
+# Actions"): the workflow token is not allowed to create the site itself.
+# After that, every push that touches site/ redeploys it.
 name: Deploy site to GitHub Pages
 
 on:

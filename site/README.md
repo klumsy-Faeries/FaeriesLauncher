@@ -43,3 +43,12 @@ The colours are the launcher's `themes/smp/colors.json` and
 properties at the top of `index.html`. SMP is the default;
 `<html data-theme="skyblock">` selects the other, which is what the header
 switch sets (and stores under `faeries-theme` in localStorage).
+
+## Hosting
+
+The page is published by `.github/workflows/pages.yml` to GitHub Pages at
+https://klumsy-faeries.github.io/FaeriesLauncher/ on every push that touches
+this folder. Pages must be enabled once on GitHub (Settings -> Pages ->
+Source: GitHub Actions); the workflow cannot enable it by itself. The
+download button links to the repository's latest release, which the
+`release.yml` workflow publishes when a version tag is pushed.
