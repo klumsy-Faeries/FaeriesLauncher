@@ -164,7 +164,11 @@ function SettingControl(props: {
               onChange={(e) => props.onChange(e.currentTarget.value)}
             >
               <For each={choice.options}>
-                {(option) => <option value={option}>{option}</option>}
+                {(option) => (
+                  <option value={option} selected={option === String(props.value)}>
+                    {option}
+                  </option>
+                )}
               </For>
             </select>
           );
@@ -178,7 +182,11 @@ function SettingControl(props: {
           onChange={(e) => props.onChange(e.currentTarget.value)}
         >
           <For each={props.localeNames}>
-            {(name) => <option value={name}>{name}</option>}
+            {(name) => (
+              <option value={name} selected={name === String(props.value)}>
+                {name}
+              </option>
+            )}
           </For>
         </select>
       </Match>
@@ -190,7 +198,11 @@ function SettingControl(props: {
           onChange={(e) => props.onChange(e.currentTarget.value)}
         >
           <For each={props.themeNames}>
-            {(name) => <option value={name}>{themeLabel(name)}</option>}
+            {(name) => (
+              <option value={name} selected={name === String(props.value)}>
+                {themeLabel(name)}
+              </option>
+            )}
           </For>
         </select>
       </Match>

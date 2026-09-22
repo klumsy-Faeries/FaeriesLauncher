@@ -2,6 +2,11 @@
 
 ## 0.7.2 — Fix: window never appeared (2026-08-31)
 
+- **The theme and language pickers show what is set.** Settings applied the
+  saved value to the dropdown before the list of themes had loaded, so the
+  picker fell back to the first entry (SMP) whenever the page opened, even
+  with Skyblock active. The matching entry is now marked selected once the
+  list is there.
 - **A Windows installer for players.** `build-installer.cmd` produces
   `Faeries Launcher_0.7.2_x64-setup.exe` (NSIS, per-user install, no admin
   prompt, Start menu entry). The mods are not inside it: the first-run
