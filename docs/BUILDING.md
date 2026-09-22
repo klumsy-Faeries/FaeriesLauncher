@@ -75,40 +75,37 @@ warning.
 The repository is set up for GitHub: the website deploys to GitHub Pages
 and the installer is attached to a release.
 
-1. **Repository.** Create it on github.com (public: GitHub Pages on a free
-   account needs a public repository), then from the repository root:
+1. **Repository.** `https://github.com/klumsy-Faeries/FaeriesLauncher` (public: GitHub
+   Pages on a free account needs a public repository). `origin` points at
+   it; `git push` signs in through Git Credential Manager's browser prompt
+   the first time.
+
+2. **Website.** `.github/workflows/pages.yml` publishes `site/` at
+   `https://klumsy-faeries.github.io/FaeriesLauncher/` on every push that touches it, and
+   enables Pages on the repository by itself the first time. The page uses
+   relative asset paths, so it works under that sub-path, and it can be
+   served from a custom domain (a `site/CNAME` file plus a DNS record) if
+   the launcher page should live under `faeriessmp.com`.
+
+3. **Installer.** Pushing a version tag builds it on GitHub and publishes
+   the release (`.github/workflows/release.yml`, about ten minutes):
 
    ```
-   git remote add origin https://github.com/<owner>/<repo>.git
-   git push -u origin main
+   git tag v0.7.2
+   git push origin v0.7.2
    ```
 
-   The first push opens a browser sign-in through Git Credential Manager.
+   The asset is named without spaces (GitHub turns them into dots), for
+   example `Faeries-Launcher-0.7.2-x64-setup.exe`, and the release notes
+   carry its SHA-256. The site's download button points at the
+   repository's *latest release* page, so it never goes stale when the
+   version changes; the direct file link is
+   `https://github.com/klumsy-Faeries/FaeriesLauncher/releases/latest/download/Faeries-Launcher-0.7.2-x64-setup.exe`.
 
-2. **Website.** Settings -> Pages -> Source: *GitHub Actions* (or
-   `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow`).
-   `.github/workflows/pages.yml` then publishes `site/` at
-   `https://<owner>.github.io/<repo>/` on every push that touches it. The
-   page uses relative asset paths, so it works under that sub-path, and it
-   can be served from a custom domain (a `site/CNAME` file plus a DNS
-   record) if the launcher page should live under `faeriessmp.com`.
-
-3. **Installer.** Build it, copy it to a name without spaces (GitHub turns
-   spaces in asset names into dots), and attach it to a release tagged
-   with the version:
-
-   ```
-   build-installer.cmd
-   copy "target\release\bundle\nsis\Faeries Launcher_0.7.2_x64-setup.exe" Faeries-Launcher-0.7.2-x64-setup.exe
-   gh release create v0.7.2 Faeries-Launcher-0.7.2-x64-setup.exe --title "Faeries Launcher 0.7.2" --notes "See CHANGELOG.md"
-   ```
-
-   The site's download button points at the repository's *latest release*
-   page, so it never goes stale when the version changes; the direct file
-   link is `https://github.com/<owner>/<repo>/releases/latest/download/Faeries-Launcher-0.7.2-x64-setup.exe`.
-
-`gh` is the GitHub CLI (`winget install GitHub.cli`, then `gh auth login`);
-everything above can also be done on github.com by hand.
+   To publish a locally built installer instead, copy it to a name without
+   spaces and attach it with the GitHub CLI (`winget install GitHub.cli`,
+   `gh auth login`, then `gh release create v0.7.2 <file>`) or on the
+   release page by hand.
 
 ## PowerShell script execution
 

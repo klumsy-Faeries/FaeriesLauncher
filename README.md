@@ -1,5 +1,7 @@
 # Faeries Launcher
 
+**Download:** [latest release](https://github.com/klumsy-Faeries/FaeriesLauncher/releases/latest) (Windows installer). **Website:** https://klumsy-faeries.github.io/FaeriesLauncher/
+
 A custom, high-performance Minecraft Java Edition launcher built from the
 ground up. Rust backend, Tauri 2 shell, SolidJS frontend, and a token-based
 theme engine where virtually every visual value is user-editable JSON.

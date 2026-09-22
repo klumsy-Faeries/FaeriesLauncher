@@ -1,0 +1,47 @@
+# Builds the Windows installer on a tag push (v0.7.2, v0.8.0, ...) and
+# publishes it as a GitHub release, so no machine needs a GitHub token:
+# `git tag v0.7.2 && git push origin v0.7.2` is the whole release step.
+# The site's download button points at the "latest release" page.
+name: Release installer
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows-installer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install interface dependencies
+        run: npm ci
+        working-directory: ui
+      - name: Build the installer (same flags as build-installer.cmd)
+        shell: cmd
+        run: ui\node_modules\.bin\tauri.cmd build --features custom-protocol
+      - name: Name the asset without spaces (GitHub turns them into dots)
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem "target\release\bundle\nsis\*-setup.exe" | Select-Object -First 1
+          $name = ($exe.Name -replace '[ _]', '-')
+          Copy-Item $exe.FullName $name
+          $sha = (Get-FileHash $name -Algorithm SHA256).Hash.ToLower()
+          "ASSET=$name" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "SHA256=$sha" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Publish the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $notes = "Windows installer for Faeries Launcher $tag. Installs per user, no admin prompt.`n`nSHA-256: ``$env:SHA256```n`nChanges: see CHANGELOG.md in the repository."
+          gh release create $tag $env:ASSET --title "Faeries Launcher $tag" --notes $notes
