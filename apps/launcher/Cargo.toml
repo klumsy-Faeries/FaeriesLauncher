@@ -1,0 +1,36 @@
+[package]
+name = "faerie-launcher"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+faerie-core = { workspace = true }
+faerie-net = { workspace = true }
+faerie-minecraft = { workspace = true }
+faerie-instances = { workspace = true }
+faerie-modding = { workspace = true }
+faerie-auth = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+reqwest = { workspace = true }
+tracing = { workspace = true }
+sysinfo = { workspace = true }
+tauri = { version = "2", features = [] }
+dirs = { workspace = true }
+notify = { version = "7", default-features = false, features = ["macos_kqueue"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[features]
+# Embed the built interface instead of loading it from the Vite dev server.
+# Tauri decides dev-vs-embedded by this feature, not by the build profile:
+# `tauri build` turns it on, `tauri dev` leaves it off, and run.cmd enables
+# it explicitly so a plain `cargo run` never shows "localhost refused".
+custom-protocol = ["tauri/custom-protocol"]

@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "name": "Skyblock",
+    "author": "Faeries Launcher",
+    "dark": false
+  },
+  "radius": {
+    "small": "6px",
+    "medium": "10px",
+    "large": "14px",
+    "pill": "999px"
+  },
+  "shadow": {
+    "card": "0 8px 24px rgba(90, 140, 200, 0.22)",
+    "popup": "0 16px 46px rgba(70, 110, 170, 0.32)",
+    "glow": "0 6px 22px rgba(242, 111, 174, 0.45)"
+  },
+  "border": {
+    "width": "2px"
+  },
+  "blur": {
+    "card": "12px",
+    "panel": "16px"
+  },
+  "motion": {
+    "fast": "120ms",
+    "normal": "200ms",
+    "slow": "350ms",
+    "easing": "cubic-bezier(0.25, 0.8, 0.35, 1)"
+  }
+}

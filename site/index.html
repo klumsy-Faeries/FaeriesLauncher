@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faeries Launcher</title>
+<meta name="description" content="The Minecraft launcher made for the Faeries SMP: signed in, optimized, and already wearing the castle. Windows · Minecraft 26.2 · Fabric.">
+<link rel="icon" type="image/png" href="assets/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* ----- tokens: the launcher's two themes, SMP (themes/smp, the default) and Skyblock (themes/skyblock) ----- */
+:root {
+  --scene: url("assets/castle.jpg");
+  --scene-pos: center 22%;
+  --scene-render: auto;
+  --border-w: 1px;
+  --ground: #fbe7f3;
+  --ground-alt: #fdd9ec;
+  --surface: rgba(255, 250, 253, 0.93);
+  --surface-alt: rgba(255, 238, 248, 0.88);
+  --surface-solid: #fffafd;
+  --border: rgba(255, 255, 255, 0.75);
+  --border-soft: rgba(244, 170, 209, 0.45);
+  --primary: #f2559b;
+  --primary-hover: #e03d87;
+  --primary-text: #ffffff;
+  --accent: #b06fe0;
+  --text: #5d2a4a;
+  --muted: #a8718f;
+  --success: #3aa76d;
+  --scene-scrim: rgba(251, 231, 243, 0.28);
+  --scene-fade: rgba(251, 231, 243, 0.92);
+  --shadow-card: 0 8px 28px rgba(198, 90, 150, 0.18);
+  --shadow-glow: 0 6px 22px rgba(242, 85, 155, 0.45);
+  --blur: 14px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --pill: 999px;
+  --ease: cubic-bezier(0.25, 0.8, 0.35, 1);
+  --display: "Fredoka", "Segoe UI", system-ui, sans-serif;
+  --body: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+  color-scheme: light;
+}
+/* Skyblock: the pink slot frames of the Skyblock GUI on a pixel sky. */
+:root[data-theme="skyblock"] {
+  --scene: url("assets/sky.png");
+  --scene-pos: center bottom;
+  --scene-render: pixelated;
+  --border-w: 2px;
+  --ground: #bfe0ff;
+  --ground-alt: #a9d4ff;
+  --surface: rgba(255, 244, 250, 0.94);
+  --surface-alt: rgba(253, 228, 241, 0.9);
+  --surface-solid: #fff6fb;
+  --border: rgba(255, 255, 255, 0.85);
+  --border-soft: rgba(246, 165, 207, 0.6);
+  --primary: #f26fae;
+  --primary-hover: #e4569c;
+  --accent: #6db8ff;
+  --text: #6a3355;
+  --muted: #ab7a97;
+  --success: #6cc46a;
+  --scene-scrim: rgba(191, 224, 255, 0.16);
+  --scene-fade: rgba(191, 224, 255, 0.9);
+  --shadow-card: 0 8px 24px rgba(90, 140, 200, 0.22);
+  --shadow-glow: 0 6px 22px rgba(242, 111, 174, 0.45);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+/* ----- ground ----- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+/* height: auto keeps the width/height attributes (kept for layout reservation) from fixing a height when CSS scales the width */
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--primary); }
+a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: var(--pill);
+}
+
+/* The theme's scene fills the window, exactly as the launcher paints it. */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--ground) var(--scene) var(--scene-pos) / cover no-repeat;
+  image-rendering: var(--scene-render);
+}
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--scene-scrim) 0, var(--scene-scrim) 46%, var(--scene-fade) 100%);
+}
+
+/* ----- shared pieces ----- */
+.wrap { width: min(1100px, calc(100% - 40px)); margin: 0 auto; }
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.label {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin: 0;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: var(--pill);
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 120ms var(--ease), background 120ms var(--ease), box-shadow 120ms var(--ease);
+}
+.pill:hover { background: var(--surface-alt); transform: translateY(-1px); }
+.pill-primary {
+  background: var(--primary);
+  color: var(--primary-text);
+  border-color: transparent;
+  box-shadow: var(--shadow-glow), inset 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+.pill-primary:hover { background: var(--primary-hover); }
+.pill-big {
+  padding: 18px 40px;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+}
+
+/* ----- header ----- */
+.top {
+  position: sticky;
+  top: 12px;
+  z-index: 10;
+  margin-top: 12px;
+  padding: 10px 14px 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border-radius: var(--pill);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.brand img { width: 34px; height: 34px; }
+.top nav { display: flex; gap: 4px; margin-left: auto; }
+.top nav a {
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.top nav a:hover { background: var(--surface-alt); }
+.top .pill { padding: 9px 16px; font-size: 12px; }
+
+/* Theme switch: the two Faeries worlds, same control as the launcher's picker. */
+.switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--pill);
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+  margin-left: 6px;
+}
+.switch button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 11px;
+  border-radius: var(--pill);
+  cursor: pointer;
+  transition: background 120ms var(--ease), color 120ms var(--ease);
+}
+.switch button[aria-pressed="true"] {
+  background: var(--primary);
+  color: var(--primary-text);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ----- hero ----- */
+.hero {
+  padding: 28px 0 28px;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.hero-logo {
+  width: min(270px, 60vw);
+  filter: drop-shadow(0 18px 30px rgba(198, 90, 150, 0.35));
+  animation: hover 6s ease-in-out infinite;
+}
+@keyframes hover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.hero h1 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(44px, 7.5vw, 76px);
+  line-height: 1;
+  margin: 4px 0 0;
+  color: var(--text);
+  text-wrap: balance;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+.hero h1 .amp { color: var(--primary); }
+.hero p.lede {
+  max-width: 34em;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  text-wrap: balance;
+  padding: 12px 22px;
+  border-radius: var(--radius-lg);
+}
+.hero .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 6px; }
+.hero .meta {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 16px;
+  border-radius: var(--pill);
+}
+
+/* ----- screenshot ----- */
+.shot { padding: 12px; margin-top: 12px; }
+.shot img { border-radius: var(--radius-md); border: 1px solid var(--border-soft); }
+.shot figcaption {
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 12px 8px 4px;
+}
+
+/* ----- sections ----- */
+section { padding: 48px 0 0; }
+.section-head { display: grid; gap: 6px; margin-bottom: 20px; }
+.section-head h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.1;
+  margin: 0;
+  text-wrap: balance;
+}
+.section-head .label, .section-head h2 {
+  display: inline-block;
+  width: fit-content;
+  padding: 4px 14px;
+  border-radius: var(--pill);
+}
+.section-head .label { padding: 5px 14px; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.card { padding: 22px 22px 20px; display: grid; gap: 10px; align-content: start; }
+.card h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.15;
+  margin: 0;
+}
+.card p { margin: 0; font-size: 15px; }
+.card ul { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.card li {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--pill);
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+}
+.card dl { margin: 2px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; }
+.card dt { color: var(--muted); font-weight: 600; }
+.card dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ----- server ----- */
+.server {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  padding: 28px;
+  align-items: center;
+}
+.server h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 36px);
+  margin: 6px 0 10px;
+  line-height: 1.1;
+}
+.server p { margin: 0 0 14px; }
+.address {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 18px;
+  border-radius: var(--pill);
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+}
+.address code {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  flex: 1;
+  color: var(--text);
+}
+.address button { padding: 9px 16px; font-size: 12px; }
+.server-side { display: grid; gap: 10px; padding: 20px; }
+.server-side .label { margin-bottom: 4px; }
+.server-side .row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.server-side .row span:first-child { color: var(--muted); font-weight: 600; }
+.server-side .row span:last-child { font-weight: 700; text-align: right; }
+.server-side .pill { margin-top: 8px; justify-self: start; }
+
+/* ----- download ----- */
+.download {
+  padding: 32px 28px;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 10px;
+}
+.download h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 36px);
+  margin: 0;
+  line-height: 1.1;
+}
+.download p { margin: 0; max-width: 40em; }
+.download .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
+.download .note {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.reqs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ----- footer ----- */
+footer {
+  margin: 48px 0 28px;
+  padding: 18px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+  font-size: 13px;
+  color: var(--muted);
+}
+footer .brand { font-size: 12px; }
+footer nav { display: flex; gap: 14px; margin-left: auto; }
+footer nav a { color: var(--text); font-weight: 700; text-decoration: none; }
+footer nav a:hover { color: var(--primary); }
+footer .legal { width: 100%; font-size: 12px; }
+
+/* ----- toast ----- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 20px);
+  padding: 10px 18px;
+  border-radius: var(--pill);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-text);
+  background: var(--success);
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ----- responsive ----- */
+@media (max-width: 900px) {
+  .cards { grid-template-columns: repeat(2, 1fr); }
+  .server { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .cards { grid-template-columns: 1fr; }
+  .top nav a:not(.pill) { display: none; }
+  .top .switch { margin-left: 0; }
+  .hero { padding-top: 24px; }
+  .hero p.lede { font-size: 17px; }
+  .server { padding: 20px; }
+  .address code { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-logo { animation: none; }
+  .pill { transition: none; }
+}
+</style>
+</head>
+<body>
+<script>
+  // Apply the remembered theme before the first paint so nothing flashes.
+  (function () {
+    try {
+      var saved = localStorage.getItem("faeries-theme");
+      if (saved === "skyblock") document.documentElement.setAttribute("data-theme", "skyblock");
+    } catch (e) { /* storage unavailable: SMP, the default */ }
+  })();
+</script>
+<div class="scene" aria-hidden="true"></div>
+
+<header class="wrap top glass">
+  <a class="brand" href="#top" aria-label="Faeries Launcher, back to top">
+    <img src="assets/mark.png" alt="" width="34" height="34">
+    Faeries Launcher
+  </a>
+  <nav aria-label="Sections">
+    <a href="#features">Features</a>
+    <a href="#server">Server</a>
+    <a href="#download">Download</a>
+    <div class="switch" role="group" aria-label="Theme">
+      <button type="button" data-theme-choice="smp" aria-pressed="true">SMP</button>
+      <button type="button" data-theme-choice="skyblock" aria-pressed="false">Skyblock</button>
+    </div>
+    <a class="pill" href="https://faeriessmp.com" target="_blank" rel="noopener">faeriessmp.com ↗</a>
+  </nav>
+</header>
+
+<main id="top" class="wrap">
+  <section class="hero" aria-labelledby="title">
+    <img class="hero-logo" src="assets/logo.png" alt="The Faeries emblem: a pink letter F wreathed in flowers and mushrooms under a rainbow, with fairy wings" width="768" height="754">
+    <h1 id="title">Faeries Launcher</h1>
+    <p class="lede glass">A Minecraft launcher made for one server. Sign in, press Play, and land on the Faeries SMP already optimized and already wearing the castle.</p>
+    <div class="actions">
+      <a class="pill pill-primary pill-big" href="#download">✦ Download ✦</a>
+      <a class="pill pill-big" href="https://faeriessmp.com" target="_blank" rel="noopener">Join the SMP</a>
+    </div>
+    <p class="meta glass">Windows · Minecraft 26.2 · Fabric · v0.7.2</p>
+  </section>
+
+  <figure class="shot glass">
+    <img src="assets/launcher-home.jpg" alt="The Faeries Launcher home screen: a pink sidebar with the emblem, the castle painting behind a large Play button, the signed-in account, the Faeries instance on Minecraft 26.2, and cards listing active mods" width="1296" height="800" loading="lazy">
+    <figcaption>Home, as it opens: signed in, the Faeries instance ready, Play in the middle of the castle.</figcaption>
+  </figure>
+
+  <section id="features" aria-labelledby="features-title">
+    <div class="section-head">
+      <p class="label glass">What it does for you</p>
+      <h2 id="features-title" class="glass">Everything the server needs, set up before your first join</h2>
+    </div>
+    <div class="cards">
+      <article class="card glass">
+        <p class="label">Optimized</p>
+        <h3>Fast from the first launch</h3>
+        <p>Every new instance starts as Fabric with the same mods as Fabulously Optimized, resolved for Minecraft 26.2 and hash-checked on download: the performance stack, shaders, OptiFine-style resource pack features, and the quality-of-life set.</p>
+        <ul aria-label="Mods in the Optimized preset">
+          <li>Fabric API</li><li>Sodium</li><li>Lithium</li><li>FerriteCore</li><li>ImmediatelyFast</li><li>Entity Culling</li><li>Dynamic FPS</li><li>BadOptimizations</li><li>Reese&#39;s Sodium Options</li><li>Sodium Extra</li><li>Better Block Entities</li><li>More Culling</li><li>ModernFix-mVUS</li><li>Ixeris</li><li>Language Reload</li><li>Iris Shaders</li><li>Continuity</li><li>Entity Texture Features</li><li>Entity Model Features</li><li>Animatica</li><li>BetterGrassify</li><li>Skyboxify</li><li>Polytone</li><li>OptiGUI</li><li>Puzzle</li><li>Sodium Shadowy Path Blocks</li><li>LambDynamicLights</li><li>Cape Provider</li><li>Mod Menu</li><li>Zoomify</li><li>Controlify</li><li>Cubes Without Borders</li><li>FastQuit</li><li>Remove Reloading Screen</li><li>More Chat History</li><li>Paginated Advancements</li><li>Better Mount HUD</li><li>Renice Shot</li><li>Debugify</li><li>e4mc</li><li>No Chat Reports</li><li>Crash Assistant</li><li>Cloth Config</li><li>YetAnotherConfigLib</li><li>Fabric Language Kotlin</li><li>Forge Config API Port</li><li>Placeholder API</li>
+        </ul>
+      </article>
+      <article class="card glass">
+        <p class="label">Faeries Theme</p>
+        <h3>The castle follows you into the game</h3>
+        <p>The Faeries emblem is the game's window icon and loading screen, the title screen looks over the castle, and the menus wear the pink. Shipped with the launcher, no download.</p>
+      </article>
+      <article class="card glass">
+        <p class="label">Pack Vault</p>
+        <h3>Download the server pack once</h3>
+        <p>The SMP's resource pack ships with the launcher and is kept locally under its own hash. Joining the server never re-downloads a pack you already have.</p>
+        <dl>
+          <dt>Server pack</dt><dd>27.5 MB, kept</dd>
+          <dt>Re-downloads</dt><dd>none</dd>
+        </dl>
+      </article>
+      <article class="card glass">
+        <p class="label">Server list</p>
+        <h3>Faeries SMP, already there</h3>
+        <p>Every instance starts with the server on its multiplayer list and server resource packs accepted, next to whatever you already had.</p>
+        <dl>
+          <dt>Address</dt><dd>faeriessmp.com</dd>
+          <dt>Packs</dt><dd>accepted</dd>
+        </dl>
+      </article>
+      <article class="card glass">
+        <p class="label">Accounts</p>
+        <h3>The real Minecraft sign-in</h3>
+        <p>Sign in with your Microsoft account through the official device code flow. The launcher never sees your password, and your session is kept in Windows Credential Manager.</p>
+      </article>
+      <article class="card glass">
+        <p class="label">Instances &amp; mods</p>
+        <h3>Profiles you can actually read</h3>
+        <p>Keep several instances, switch mod profiles, and get a compatibility check that says what is wrong, why, and how to fix it before you press Play.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="server" aria-labelledby="server-title">
+    <div class="server glass">
+      <div>
+        <p class="label">Play on the Faeries SMP</p>
+        <h2 id="server-title">One address. It is already in the launcher.</h2>
+        <p>Add the server yourself if you play from another launcher, or just press Play in this one: the Faeries instance opens with the SMP on its list and its pack in place.</p>
+        <div class="address">
+          <code id="address">faeriessmp.com</code>
+          <button class="pill" type="button" id="copy" aria-label="Copy the server address">Copy</button>
+        </div>
+      </div>
+      <div class="server-side glass">
+        <p class="label">Server</p>
+        <div class="row"><span>Website</span><span><a href="https://faeriessmp.com" target="_blank" rel="noopener">faeriessmp.com</a></span></div>
+        <div class="row"><span>Version</span><span>Minecraft 26.2</span></div>
+        <div class="row"><span>Client</span><span>Fabric, the Faeries instance</span></div>
+        <div class="row"><span>Resource pack</span><span>Automatic, kept in the vault</span></div>
+        <a class="pill pill-primary" href="https://faeriessmp.com" target="_blank" rel="noopener">Visit faeriessmp.com ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="download" aria-labelledby="download-title">
+    <div class="download glass">
+      <p class="label">Download</p>
+      <h2 id="download-title">Faeries Launcher for Windows</h2>
+      <p>One installer. Java for Minecraft 26.2 installs itself, the Faeries instance is created on first run, and Play does the rest.</p>
+      <div class="actions">
+        <!-- Point this at the release installer when it is published. -->
+        <a class="pill pill-primary pill-big" id="download-link" href="#download">✦ Download v0.7.2 ✦</a>
+        <a class="pill pill-big" href="https://faeriessmp.com" target="_blank" rel="noopener">Read more on the SMP site</a>
+      </div>
+      <p class="note">The first public build is being prepared. Until it is up, this button stays here.</p>
+      <ul class="reqs" aria-label="Requirements">
+        <li>Windows 10 or 11, 64-bit</li>
+        <li>Minecraft: Java Edition</li>
+        <li>A Microsoft account that owns the game</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="glass">
+    <a class="brand" href="#top"><img src="assets/mark.png" alt="" width="28" height="28">Faeries Launcher</a>
+    <span>v0.7.2</span>
+    <nav aria-label="Links">
+      <a href="https://faeriessmp.com" target="_blank" rel="noopener">faeriessmp.com</a>
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+    </nav>
+    <p class="legal">Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.</p>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+
+<script>
+  (function () {
+    // Theme switch: SMP is the document default; Skyblock is a data-theme
+    // stamp on <html>, remembered per browser.
+    var choices = document.querySelectorAll("[data-theme-choice]");
+    function applyTheme(name) {
+      if (name === "skyblock") {
+        document.documentElement.setAttribute("data-theme", "skyblock");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+      choices.forEach(function (b) {
+        b.setAttribute("aria-pressed", b.getAttribute("data-theme-choice") === name ? "true" : "false");
+      });
+      try { localStorage.setItem("faeries-theme", name); } catch (e) { /* fine */ }
+    }
+    choices.forEach(function (b) {
+      b.addEventListener("click", function () { applyTheme(b.getAttribute("data-theme-choice")); });
+    });
+    if (document.documentElement.getAttribute("data-theme") === "skyblock") {
+      choices.forEach(function (b) {
+        b.setAttribute("aria-pressed", b.getAttribute("data-theme-choice") === "skyblock" ? "true" : "false");
+      });
+    }
+  })();
+
+  (function () {
+    var button = document.getElementById("copy");
+    var toast = document.getElementById("toast");
+    var address = document.getElementById("address").textContent.trim();
+    var timer;
+    function show(text) {
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(timer);
+      timer = setTimeout(function () { toast.classList.remove("show"); }, 1800);
+    }
+    button.addEventListener("click", function () {
+      var done = function () { show("Copied " + address); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(address).then(done, function () { fallback(); });
+      } else {
+        fallback();
+      }
+      function fallback() {
+        var range = document.createRange();
+        range.selectNodeContents(document.getElementById("address"));
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        try { document.execCommand("copy"); done(); } catch (e) { show("Select and copy: " + address); }
+      }
+    });
+  })();
+</script>
+</body>
+</html>

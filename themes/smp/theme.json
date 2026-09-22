@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "name": "Faerie",
+    "author": "Faeries Launcher",
+    "dark": false
+  },
+  "radius": {
+    "small": "10px",
+    "medium": "16px",
+    "large": "24px",
+    "pill": "999px"
+  },
+  "shadow": {
+    "card": "0 8px 28px rgba(198, 90, 150, 0.18)",
+    "popup": "0 16px 46px rgba(140, 60, 110, 0.3)",
+    "glow": "0 6px 22px rgba(242, 85, 155, 0.45)"
+  },
+  "border": {
+    "width": "1px"
+  },
+  "blur": {
+    "card": "14px",
+    "panel": "18px"
+  },
+  "motion": {
+    "fast": "120ms",
+    "normal": "200ms",
+    "slow": "350ms",
+    "easing": "cubic-bezier(0.25, 0.8, 0.35, 1)"
+  }
+}

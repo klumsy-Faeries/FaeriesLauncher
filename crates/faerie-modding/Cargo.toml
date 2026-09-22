@@ -1,0 +1,28 @@
+[package]
+name = "faerie-modding"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+faerie-net = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+futures-util = { workspace = true }
+tracing = { workspace = true }
+reqwest = { workspace = true }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+toml = "0.8"
+async-trait = "0.1"
+
+[dev-dependencies]
+criterion = { workspace = true }
+test-support = { workspace = true }
+tempfile = { workspace = true }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+
+[[bench]]
+name = "modding"
+harness = false

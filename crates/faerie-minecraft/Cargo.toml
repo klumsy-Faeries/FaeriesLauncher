@@ -1,0 +1,30 @@
+[package]
+name = "faerie-minecraft"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+faerie-net = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+futures-util = { workspace = true }
+tracing = { workspace = true }
+reqwest = { workspace = true }
+sysinfo = { workspace = true }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.55"
+
+[dev-dependencies]
+criterion = { workspace = true }
+test-support = { workspace = true }
+tempfile = { workspace = true }
+
+[[bench]]
+name = "version"
+harness = false

@@ -1,0 +1,18 @@
+{
+  "family": {
+    "base": "'Segoe UI', system-ui, -apple-system, sans-serif",
+    "mono": "'Cascadia Mono', Consolas, monospace"
+  },
+  "size": {
+    "small": "12px",
+    "base": "14px",
+    "large": "16px",
+    "title": "20px",
+    "hero": "30px"
+  },
+  "weight": {
+    "normal": "400",
+    "medium": "600",
+    "bold": "700"
+  }
+}

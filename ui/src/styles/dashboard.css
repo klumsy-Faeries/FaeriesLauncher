@@ -1,0 +1,428 @@
+/* Window chrome, sidebar brand card, and the dashboard grid.
+   Loaded after app.css, so these rules refine the base styles.
+   Every value still comes from a --fae-* token (§31). */
+
+/* ---- Top bar and window chrome ---- */
+
+/* A real layout row, not an overlay: that is what lets the drag region
+   receive events. Children opt out of dragging so they stay clickable. */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--fae-space-sm);
+  padding: var(--fae-space-sm) var(--fae-space-lg) 0;
+  flex-shrink: 0;
+}
+
+.topbar > * {
+  -webkit-app-region: no-drag;
+}
+
+.search-trigger {
+  flex: 1;
+  margin: 0;
+}
+
+.window-controls {
+  display: flex;
+  gap: var(--fae-space-xs);
+  flex-shrink: 0;
+}
+
+.window-button {
+  width: 34px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: var(--fae-radius-small);
+  background: var(--fae-color-primary);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--fae-shadow-card);
+  color: var(--fae-color-primary-text);
+}
+
+.window-button svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.window-button:hover:enabled {
+  background: var(--fae-color-primary-hover);
+}
+
+.window-close:hover:enabled {
+  background: var(--fae-color-danger);
+}
+
+/* ---- Sidebar brand card ---- */
+
+.brand-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--fae-space-md) var(--fae-space-sm);
+  margin-bottom: var(--fae-space-md);
+  border-radius: var(--fae-radius-large);
+  background: var(--fae-color-surface);
+  border: var(--fae-border-width) solid var(--fae-color-border);
+  box-shadow: var(--fae-shadow-card);
+}
+
+.brand-mark {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--fae-space-xs);
+  border-radius: var(--fae-radius-large);
+  background: linear-gradient(
+    160deg,
+    var(--fae-color-primary) 0%,
+    var(--fae-color-accent) 100%
+  );
+  background-size: cover;
+  background-position: center;
+  color: var(--fae-color-primary-text);
+  font-size: 34px;
+  line-height: 1;
+  box-shadow: var(--fae-shadow-glow);
+}
+
+/* With artwork supplied, the mark is the art itself: no tile behind it. */
+.brand-mark.has-mark {
+  width: 96px;
+  height: 96px;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.brand-name {
+  font-size: var(--fae-font-size-base);
+  font-weight: var(--fae-font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fae-color-primary);
+  text-align: center;
+}
+
+.brand-version {
+  font-size: var(--fae-font-size-small);
+  color: var(--fae-color-text-muted);
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fae-space-xs);
+}
+
+/* Chunkier, uppercase nav to match the reference weight. */
+.nav-item {
+  gap: var(--fae-space-md);
+  padding: var(--fae-space-sm) var(--fae-space-md);
+  border-radius: var(--fae-radius-large);
+  font-size: var(--fae-font-size-base);
+  font-weight: var(--fae-font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nav-item .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-social a svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---- Dashboard grid ---- */
+
+/* Symmetric side columns so the hero column — and therefore the logo and
+   Play button — is centred on the content area. Account and status cards
+   stack on the left, news on the right. */
+.home-layout {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "account hero news"
+    "status  hero news"
+    ".       hero news"
+    "cards   cards cards";
+  grid-template-columns: minmax(230px, 270px) minmax(0, 1fr) minmax(230px, 270px);
+  padding-top: var(--fae-space-lg);
+}
+
+.home-account {
+  justify-self: stretch;
+  min-width: 0;
+}
+
+.home-status-card {
+  grid-area: status;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fae-space-md);
+  padding: var(--fae-space-sm) var(--fae-space-md);
+  justify-self: stretch;
+  min-width: 0;
+}
+
+/* The scene is centred on the content area, not the window: the box is
+   widened by one sidebar width on the right so its midpoint lands under the
+   middle of the page, while the area behind the sidebar stays painted. */
+body::before {
+  right: calc(-1 * var(--fae-sidebar-width, 232px));
+}
+
+.status-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.status-title {
+  font-weight: var(--fae-font-weight-bold);
+}
+
+.status-block .muted,
+.status-metric .muted {
+  font-size: var(--fae-font-size-small);
+}
+
+.status-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.metric-value {
+  font-size: var(--fae-font-size-title);
+  font-weight: var(--fae-font-weight-bold);
+  color: var(--fae-color-primary);
+  line-height: 1;
+}
+
+.verified {
+  margin-left: var(--fae-space-xs);
+  color: var(--fae-color-primary);
+  font-size: var(--fae-font-size-small);
+}
+
+/* ---- Hero ---- */
+
+.home-hero {
+  gap: var(--fae-space-sm);
+  /* Lets the wordmark size itself to the hero column (see .home-title). */
+  container-type: inline-size;
+}
+
+.hero-logo {
+  margin-bottom: var(--fae-space-xs);
+}
+
+/* Sized for a square emblem, not a wide wordmark: tall enough to read, but
+   the Play button and picker below must stay above the bottom card row.
+   Width follows height (aspect-ratio) because a percentage width inside the
+   shrink-to-fit .hero-logo wrapper resolves to zero. */
+.hero-logo-image {
+  height: clamp(200px, 30vh, 300px);
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* A thick white outline under the fill is what lets the wordmark read
+   against a busy background scene, the way the reference logo does. */
+.home-title {
+  white-space: nowrap;
+  /* Never wider than the hero column: 16 uppercase characters with this
+     tracking run about 11.5em, so 8.5cqw keeps it inside. */
+  font-size: min(calc(var(--fae-font-size-hero) * 1.5), 8.5cqw);
+  letter-spacing: 0.06em;
+  color: var(--fae-color-primary);
+  -webkit-text-stroke: 8px #ffffff;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 6px 16px rgba(150, 60, 110, 0.45));
+}
+
+/* Stands in for the instance picker while there is nothing to pick. */
+.hero-create {
+  display: inline-block;
+  padding: var(--fae-space-sm) var(--fae-space-xl);
+  border-radius: var(--fae-radius-pill);
+  background: var(--fae-color-surface);
+  border: var(--fae-border-width) solid var(--fae-color-primary);
+  box-shadow: var(--fae-shadow-card);
+  color: var(--fae-color-primary);
+  font-weight: var(--fae-font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.hero-create:hover {
+  background: var(--fae-color-surface-alt);
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--fae-space-sm);
+}
+
+.hero-action {
+  padding: var(--fae-space-xs) var(--fae-space-lg);
+  border-radius: var(--fae-radius-pill);
+  background: var(--fae-color-surface);
+  border: var(--fae-border-width) solid var(--fae-color-border);
+  box-shadow: var(--fae-shadow-card);
+  color: var(--fae-color-text);
+  font-size: var(--fae-font-size-small);
+  font-weight: var(--fae-font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.hero-action:hover {
+  background: var(--fae-color-surface-alt);
+}
+
+.version-row {
+  width: min(100%, 460px);
+  justify-content: center;
+  background: var(--fae-color-surface);
+  border-color: var(--fae-color-border);
+  box-shadow: var(--fae-shadow-card);
+  padding: var(--fae-space-sm) var(--fae-space-md);
+}
+
+/* ---- News panel ---- */
+
+.news-item {
+  flex-direction: row;
+  gap: var(--fae-space-sm);
+}
+
+.news-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--fae-radius-medium);
+  background: var(--fae-color-surface-alt);
+  border: var(--fae-border-width) solid var(--fae-color-border-soft);
+  color: var(--fae-color-primary);
+}
+
+.news-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* ---- Card footer actions ---- */
+
+.card-footer-link {
+  display: block;
+  margin-top: var(--fae-space-sm);
+  padding: var(--fae-space-xs) var(--fae-space-sm);
+  border-radius: var(--fae-radius-medium);
+  background: var(--fae-color-surface-alt);
+  border: var(--fae-border-width) solid var(--fae-color-border-soft);
+  color: var(--fae-color-primary);
+  font-size: var(--fae-font-size-small);
+  font-weight: var(--fae-font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+}
+
+.card-footer-link:hover {
+  background: var(--fae-color-background-alt);
+}
+
+.home-card .card-footer-link {
+  margin-top: auto;
+}
+
+.home-card-empty {
+  justify-content: flex-start;
+}
+
+/* ---- Status bar ---- */
+
+.status-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: var(--fae-space-xs) var(--fae-space-md);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fae-space-xs);
+  font-weight: var(--fae-font-weight-medium);
+  color: var(--fae-color-text);
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--fae-color-success);
+}
+
+.status-busy .status-dot {
+  background: var(--fae-color-warning);
+}
+
+.status-center {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 var(--fae-space-md);
+}
+
+.status-actions button {
+  font-size: var(--fae-font-size-small);
+  padding: 2px var(--fae-space-sm);
+}
+
+@media (max-width: 1100px) {
+  .home-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "account"
+      "status"
+      "hero"
+      "cards";
+  }
+
+  .home-status-card {
+    justify-self: stretch;
+  }
+}

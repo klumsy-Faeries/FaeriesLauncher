@@ -1,0 +1,30 @@
+{
+  "sidebar": {
+    "enabled": true,
+    "width": "232px",
+    "items": [
+      "home",
+      "instances",
+      "mods",
+      "versions",
+      "downloads",
+      "accounts",
+      "settings"
+    ],
+    "showSocial": true
+  },
+  "statusBar": {
+    "enabled": true
+  },
+  "home": {
+    "showPlayButton": true,
+    "showAccountCard": true,
+    "showNews": true,
+    "cards": [
+      "mods",
+      "cosmetics",
+      "instance",
+      "friends"
+    ]
+  }
+}

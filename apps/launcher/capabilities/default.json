@@ -1,0 +1,6 @@
+{
+  "identifier": "default",
+  "description": "Baseline permissions for the main launcher window.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}
