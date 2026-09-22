@@ -1,8 +1,8 @@
 # Publishes the one-page website in site/ to GitHub Pages.
 #
-# One-time setup on GitHub: Settings -> Pages -> Source: "GitHub Actions"
-# (or `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow`).
-# After that every push that touches site/ redeploys it.
+# No setup on GitHub is needed: the configure step enables Pages for the
+# repository on its first run (Settings -> Pages then shows "GitHub Actions"
+# as the source). Every push that touches site/ redeploys it.
 name: Deploy site to GitHub Pages
 
 on:
@@ -31,6 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
