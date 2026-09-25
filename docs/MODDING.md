@@ -123,7 +123,8 @@ reported as skipped.
 The preset can also carry **resource packs** (`packs/` in the repository):
 each is copied into the instance's `resourcepacks/` folder and enabled at
 the top of the pack stack in `options.txt`, with every other line of that
-file left untouched. Because the game rewrites `options.txt` when it exits,
+file left untouched. Two ship today: the **Faeries SMP pack** (the server's
+own art) and, on top of it, **Fairy Castle GUI** (pastel HUD and menus). Because the game rewrites `options.txt` when it exits,
 the set cannot be added while Minecraft is running.
 
 Every instance the launcher creates also starts with **Faeries SMP

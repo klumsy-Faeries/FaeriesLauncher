@@ -2,6 +2,9 @@
 
 ## 0.7.2 — Fix: window never appeared (2026-08-31)
 
+- **The Fairy Castle GUI pack is enabled by default.** The pastel HUD and
+  menu textures ship in the launcher next to the server pack and go on top
+  of the pack stack in every instance the Optimized set is installed into.
 - **The theme and language pickers show what is set.** Settings applied the
   saved value to the dropdown before the list of themes had loaded, so the
   picker fell back to the first entry (SMP) whenever the page opened, even

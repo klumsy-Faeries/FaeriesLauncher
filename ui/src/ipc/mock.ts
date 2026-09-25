@@ -165,7 +165,10 @@ const OPTIMIZED_PRESET: ModPreset = {
     { id: "faeries-theme", name: "Faeries Theme", reason: "Faeries logo as the window icon, loading screen, title panorama, and menu buttons. Cosmetic only.", fileName: "faeries-theme-0.1.0+mc26.2.jar", gameVersion: "26.2" },
     { id: "faeries-vault", name: "Faeries Pack Vault", reason: "Keeps server resource packs stored locally so joining is instant; verifies by hash and falls back to a normal download.", fileName: "faeries-vault-0.1.0+mc26.2.jar", gameVersion: "26.2" },
   ],
-  packs: [],
+  packs: [
+    { id: "faeries-smp", name: "Faeries SMP pack", reason: "The server's own item and block art, so custom items look right everywhere and joining needs no download.", fileName: "faeries-smp.zip" },
+    { id: "fairy-castle-gui", name: "Fairy Castle GUI", reason: "Pastel HUD and menus that match the launcher's castle look.", fileName: "fairy-castle-gui.zip" },
+  ],
   retired: [
     { modId: "krypton", name: "Krypton", reason: "Its build for Minecraft 26.2 fails a mixin on the login packet handler, which Controlify loads at startup, so the game crashed before the title screen. Fabulously Optimized does not carry it either." },
   ],

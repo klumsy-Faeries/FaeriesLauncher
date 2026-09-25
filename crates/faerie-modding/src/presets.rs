@@ -455,19 +455,30 @@ pub static FAERIES_MODS: &[BundledMod] = &[
     },
 ];
 
-/// Resource packs enabled by default (see `packs/README.md`).
-pub static FAERIES_PACKS: &[BundledPack] = &[BundledPack {
-    id: "faeries-smp",
-    name: "Faeries SMP pack",
-    reason: "The server's own item and block art, so custom items look right everywhere \
-             and joining needs no download.",
-    file_name: "faeries-smp.zip",
-    vault: Some(VaultHint {
-        server: "mc.faeriessmp.com",
-        url_base: "https://hermes.nexomc.com/pack",
-    }),
-    bytes: include_bytes!("../../../packs/faeries-smp.zip"),
-}];
+/// Resource packs enabled by default (see `packs/README.md`). Order matters:
+/// each is enabled on top of the previous one, so the last entry wins.
+pub static FAERIES_PACKS: &[BundledPack] = &[
+    BundledPack {
+        id: "faeries-smp",
+        name: "Faeries SMP pack",
+        reason: "The server's own item and block art, so custom items look right \
+                 everywhere and joining needs no download.",
+        file_name: "faeries-smp.zip",
+        vault: Some(VaultHint {
+            server: "mc.faeriessmp.com",
+            url_base: "https://hermes.nexomc.com/pack",
+        }),
+        bytes: include_bytes!("../../../packs/faeries-smp.zip"),
+    },
+    BundledPack {
+        id: "fairy-castle-gui",
+        name: "Fairy Castle GUI",
+        reason: "Pastel HUD and menus that match the launcher's castle look.",
+        file_name: "fairy-castle-gui.zip",
+        vault: None,
+        bytes: include_bytes!("../../../packs/fairy-castle-gui.zip"),
+    },
+];
 
 pub static ALL: &[&Preset] = &[&OPTIMIZED];
 
